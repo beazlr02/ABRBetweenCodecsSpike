@@ -46,7 +46,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerItemAccessLogDidProcessNewEntry:) name:AVPlayerItemNewAccessLogEntryNotification object:_playerItem];
     
     [self updatePlayerItemBitrateWithBitrate:[_availableBitratesWithinTestPlaylist firstObject]];
-    [player setVolume:0.01];
+    [player setVolume:1];
     [player play];
 }
 
