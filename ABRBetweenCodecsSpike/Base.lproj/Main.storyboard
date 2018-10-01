@@ -20,20 +20,20 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="K32-Li-NVx">
-                                <rect key="frame" x="14" y="314.5" width="347" height="58.5"/>
+                                <rect key="frame" x="14" y="330" width="347" height="28"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oBH-zl-MAQ">
-                                        <rect key="frame" x="0.0" y="0.0" width="347" height="20.5"/>
-                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="50000" minValue="50000" maxValue="375000" translatesAutoresizingMaskIntoConstraints="NO" id="KDS-fu-MRk">
-                                        <rect key="frame" x="-2" y="28.5" width="351" height="31"/>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="E6Y-Oh-doQ">
+                                        <rect key="frame" x="0.0" y="0.0" width="347" height="29"/>
+                                        <segments>
+                                            <segment title="56000"/>
+                                            <segment title="112000"/>
+                                            <segment title="150000"/>
+                                            <segment title="374000"/>
+                                        </segments>
                                         <connections>
-                                            <action selector="bitrateSliderValueDidChange:" destination="BYZ-38-t0r" eventType="valueChanged" id="qEI-xF-Cbd"/>
+                                            <action selector="segmentControlValueDidChange:" destination="BYZ-38-t0r" eventType="valueChanged" id="rmY-ak-erj"/>
                                         </connections>
-                                    </slider>
+                                    </segmentedControl>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -45,10 +45,6 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <connections>
-                        <outlet property="_bitrateSlider" destination="KDS-fu-MRk" id="NNw-Kc-0qe"/>
-                        <outlet property="_currentBitrateValueLabel" destination="oBH-zl-MAQ" id="ZtH-gr-DpY"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

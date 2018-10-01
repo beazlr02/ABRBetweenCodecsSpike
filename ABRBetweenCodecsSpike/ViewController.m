@@ -12,13 +12,14 @@
 @implementation ViewController {
     AVPlayer *_player;
     AVPlayerItem *_playerItem;
-    __weak IBOutlet UISlider *_bitrateSlider;
-    __weak IBOutlet UILabel *_currentBitrateValueLabel;
+    NSArray<NSNumber *> *_indexedBitratesWithinSegmentControl;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    _indexedBitratesWithinSegmentControl = @[@(56000), @(112000), @(150000), @(374000)];
     
     NSURL *playlistURL = [NSURL URLWithString:@"http://as-hls-uk-live.akamaized.net/pool_6/live/bbc_radio_one/bbc_radio_one.isml/.m3u8"];
     AVAsset *asset = [AVURLAsset URLAssetWithURL:playlistURL options:nil];
@@ -30,7 +31,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerItemAccessLogDidProcessNewEntry:) name:AVPlayerItemNewAccessLogEntryNotification object:_playerItem];
     
-    [self bitrateSliderValueDidChange:_bitrateSlider];
+    [self updatePlayerItemBitrateWithBitrate:[_indexedBitratesWithinSegmentControl firstObject]];
     [player setVolume:0.01];
     [player play];
 }
@@ -48,17 +49,15 @@
     NSLog(@"%@", info);
 }
 
-- (IBAction)bitrateSliderValueDidChange:(UISlider *)sender
+- (void)updatePlayerItemBitrateWithBitrate:(NSNumber *)bitrate
 {
-    [self updateCurrentBitrateWithSelectedBitrate:(double)sender.value];
+    _playerItem.preferredPeakBitRate = [bitrate doubleValue];
 }
 
-- (void)updateCurrentBitrateWithSelectedBitrate:(double)bitrate
+- (IBAction)segmentControlValueDidChange:(UISegmentedControl *)sender
 {
-    _playerItem.preferredPeakBitRate = bitrate;
-    
-    NSString *bitrateString = [NSString stringWithFormat:@"%f", bitrate];
-    _currentBitrateValueLabel.text = bitrateString;
+    NSNumber *bitrate = _indexedBitratesWithinSegmentControl[sender.selectedSegmentIndex];
+    [self updatePlayerItemBitrateWithBitrate:bitrate];
 }
 
 @end
