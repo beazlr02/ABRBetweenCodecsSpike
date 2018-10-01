@@ -14,6 +14,11 @@
     AVPlayerItem *_playerItem;
     __weak IBOutlet UISegmentedControl *_bitrateSelectionSegmentControl;
     NSArray<NSNumber *> *_availableBitratesWithinTestPlaylist;
+    
+    
+    __weak IBOutlet UILabel *_indicatedBitrateLabel;
+    __weak IBOutlet UILabel *_observedBitrateLabel;
+    __weak IBOutlet UILabel *_switchBitrateLabel;
 }
 
 - (void)viewDidLoad
@@ -54,6 +59,10 @@
                            @"switchBitrate": @(lastEvent.switchBitrate),
                            @"indicatedBitrate": @(lastEvent.indicatedBitrate)
                            };
+    
+    _indicatedBitrateLabel.text = [NSString stringWithFormat:@"Indicated Bitrate: %i", (int)lastEvent.indicatedBitrate];
+    _observedBitrateLabel.text = [NSString stringWithFormat:@"Observed Bitrate: %i", (int)lastEvent.observedBitrate];
+    _switchBitrateLabel.text = [NSString stringWithFormat:@"Switch Bitrate: %i", (int)lastEvent.switchBitrate];
     
     NSLog(@"%@", info);
 }

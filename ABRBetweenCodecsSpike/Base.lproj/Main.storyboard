@@ -20,10 +20,28 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="K32-Li-NVx">
-                                <rect key="frame" x="14" y="330" width="347" height="28"/>
+                                <rect key="frame" x="14" y="287" width="347" height="113.5"/>
                                 <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Indicated Bitrate: Unknown" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8S3-xC-jVr">
+                                        <rect key="frame" x="0.0" y="0.0" width="347" height="20.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Observed Bitrate: Unknown" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dIf-xf-y9h">
+                                        <rect key="frame" x="0.0" y="28.5" width="347" height="20.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Switch Bitrate: Unknown" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="35G-iD-HcA">
+                                        <rect key="frame" x="0.0" y="57" width="347" height="20.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="E6Y-Oh-doQ">
-                                        <rect key="frame" x="0.0" y="0.0" width="347" height="29"/>
+                                        <rect key="frame" x="0.0" y="85.5" width="347" height="29"/>
                                         <segments>
                                             <segment title="56000"/>
                                             <segment title="112000"/>
@@ -45,6 +63,9 @@
                     </view>
                     <connections>
                         <outlet property="_bitrateSelectionSegmentControl" destination="E6Y-Oh-doQ" id="vCC-0S-3r8"/>
+                        <outlet property="_indicatedBitrateLabel" destination="8S3-xC-jVr" id="fe0-t9-DR8"/>
+                        <outlet property="_observedBitrateLabel" destination="dIf-xf-y9h" id="uZc-6f-gOl"/>
+                        <outlet property="_switchBitrateLabel" destination="35G-iD-HcA" id="OsX-17-hy9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
