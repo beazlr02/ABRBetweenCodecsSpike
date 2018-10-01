@@ -27,8 +27,6 @@
                                         <segments>
                                             <segment title="56000"/>
                                             <segment title="112000"/>
-                                            <segment title="150000"/>
-                                            <segment title="374000"/>
                                         </segments>
                                         <connections>
                                             <action selector="segmentControlValueDidChange:" destination="BYZ-38-t0r" eventType="valueChanged" id="rmY-ak-erj"/>
@@ -45,6 +43,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="_bitrateSelectionSegmentControl" destination="E6Y-Oh-doQ" id="vCC-0S-3r8"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

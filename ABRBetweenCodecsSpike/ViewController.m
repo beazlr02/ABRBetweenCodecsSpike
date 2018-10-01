@@ -12,14 +12,23 @@
 @implementation ViewController {
     AVPlayer *_player;
     AVPlayerItem *_playerItem;
-    NSArray<NSNumber *> *_indexedBitratesWithinSegmentControl;
+    __weak IBOutlet UISegmentedControl *_bitrateSelectionSegmentControl;
+    NSArray<NSNumber *> *_availableBitratesWithinTestPlaylist;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    _indexedBitratesWithinSegmentControl = @[@(56000), @(112000), @(150000), @(374000)];
+    [_bitrateSelectionSegmentControl removeAllSegments];
+    
+    _availableBitratesWithinTestPlaylist = @[@(56000), @(112000), @(150000), @(374000)];
+    [_availableBitratesWithinTestPlaylist enumerateObjectsUsingBlock:^(NSNumber *availableBitrateFromPlaylist, NSUInteger idx, __unused BOOL *stop) {
+        NSString *bitrateString = [NSString stringWithFormat:@"%li", [availableBitrateFromPlaylist integerValue]];
+        [self->_bitrateSelectionSegmentControl insertSegmentWithTitle:bitrateString atIndex:idx animated:NO];
+    }];
+    
+    [_bitrateSelectionSegmentControl setSelectedSegmentIndex:0];
     
     NSURL *playlistURL = [NSURL URLWithString:@"http://as-hls-uk-live.akamaized.net/pool_6/live/bbc_radio_one/bbc_radio_one.isml/.m3u8"];
     AVAsset *asset = [AVURLAsset URLAssetWithURL:playlistURL options:nil];
@@ -31,7 +40,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerItemAccessLogDidProcessNewEntry:) name:AVPlayerItemNewAccessLogEntryNotification object:_playerItem];
     
-    [self updatePlayerItemBitrateWithBitrate:[_indexedBitratesWithinSegmentControl firstObject]];
+    [self updatePlayerItemBitrateWithBitrate:[_availableBitratesWithinTestPlaylist firstObject]];
     [player setVolume:0.01];
     [player play];
 }
@@ -56,7 +65,7 @@
 
 - (IBAction)segmentControlValueDidChange:(UISegmentedControl *)sender
 {
-    NSNumber *bitrate = _indexedBitratesWithinSegmentControl[sender.selectedSegmentIndex];
+    NSNumber *bitrate = _availableBitratesWithinTestPlaylist[sender.selectedSegmentIndex];
     [self updatePlayerItemBitrateWithBitrate:bitrate];
 }
 
