@@ -12,6 +12,7 @@
 @implementation ViewController {
     AVPlayer *_player;
     AVPlayerItem *_playerItem;
+    __weak IBOutlet UISlider *_bitrateSlider;
     __weak IBOutlet UILabel *_currentBitrateValueLabel;
 }
 
@@ -29,6 +30,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerItemAccessLogDidProcessNewEntry:) name:AVPlayerItemNewAccessLogEntryNotification object:_playerItem];
     
+    [self bitrateSliderValueDidChange:_bitrateSlider];
     [player setVolume:0.01];
     [player play];
 }
@@ -39,7 +41,8 @@
     AVPlayerItemAccessLogEvent *lastEvent = [[accessLog events] lastObject];
     
     NSDictionary *info = @{@"observedBitrate": @(lastEvent.observedBitrate),
-                           @"switchBitrate": @(lastEvent.switchBitrate)
+                           @"switchBitrate": @(lastEvent.switchBitrate),
+                           @"indicatedBitrate": @(lastEvent.indicatedBitrate)
                            };
     
     NSLog(@"%@", info);

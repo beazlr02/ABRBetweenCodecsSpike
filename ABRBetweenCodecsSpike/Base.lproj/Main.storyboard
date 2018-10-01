@@ -28,7 +28,7 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="200000" minValue="0.0" maxValue="400000" translatesAutoresizingMaskIntoConstraints="NO" id="KDS-fu-MRk">
+                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="50000" minValue="50000" maxValue="375000" translatesAutoresizingMaskIntoConstraints="NO" id="KDS-fu-MRk">
                                         <rect key="frame" x="-2" y="28.5" width="351" height="31"/>
                                         <connections>
                                             <action selector="bitrateSliderValueDidChange:" destination="BYZ-38-t0r" eventType="valueChanged" id="qEI-xF-Cbd"/>
@@ -46,6 +46,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="_bitrateSlider" destination="KDS-fu-MRk" id="NNw-Kc-0qe"/>
                         <outlet property="_currentBitrateValueLabel" destination="oBH-zl-MAQ" id="ZtH-gr-DpY"/>
                     </connections>
                 </viewController>
