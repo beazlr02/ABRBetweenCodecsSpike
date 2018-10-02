@@ -60,9 +60,9 @@
                            @"indicatedBitrate": @(lastEvent.indicatedBitrate)
                            };
     
-    _indicatedBitrateLabel.text = [NSString stringWithFormat:@"Indicated Bitrate: %i", (int)lastEvent.indicatedBitrate];
-    _observedBitrateLabel.text = [NSString stringWithFormat:@"Observed Bitrate: %i", (int)lastEvent.observedBitrate];
-    _switchBitrateLabel.text = [NSString stringWithFormat:@"Switch Bitrate: %i", (int)lastEvent.switchBitrate];
+    _indicatedBitrateLabel.text = [self stringRepresentationFromBitrate:lastEvent.indicatedBitrate];
+    _observedBitrateLabel.text = [self stringRepresentationFromBitrate:lastEvent.observedBitrate];
+    _switchBitrateLabel.text = [self stringRepresentationFromBitrate:lastEvent.switchBitrate];
     
     NSLog(@"%@", info);
 }
@@ -76,6 +76,11 @@
 {
     NSNumber *bitrate = _availableBitratesWithinTestPlaylist[sender.selectedSegmentIndex];
     [self updatePlayerItemBitrateWithBitrate:bitrate];
+}
+
+- (NSString *)stringRepresentationFromBitrate:(double)bitrate
+{
+    return [NSString stringWithFormat:@"%i", (int)bitrate];
 }
 
 @end
