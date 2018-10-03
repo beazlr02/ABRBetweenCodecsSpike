@@ -47,6 +47,7 @@ typedef NSArray<NSNumber *> BitratesArray;
     AVPlayer *_player;
     AVPlayerItem *_playerItem;
     BitratesArray *_availableBitratesWithinTestPlaylist;
+    UIImpactFeedbackGenerator *_variantChangedFeedbackGenerator;
     
     __weak IBOutlet UISegmentedControl *_bitrateSelectionSegmentControl;
     __weak IBOutlet UILabel *_currentPlaylistLabel;
@@ -91,6 +92,7 @@ typedef NSArray<NSNumber *> BitratesArray;
     [super viewDidLoad];
     
     _player = [[AVPlayer alloc] init];
+    _variantChangedFeedbackGenerator = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium];
     [self swapToDefaultTestPlaylist];
 }
 
@@ -98,17 +100,13 @@ typedef NSArray<NSNumber *> BitratesArray;
 
 - (void)playerItemAccessLogDidProcessNewEntry:(NSNotification *)notification
 {
+    [_variantChangedFeedbackGenerator impactOccurred];
+    
     AVPlayerItemAccessLog *accessLog = [_playerItem accessLog];
     AVPlayerItemAccessLogEvent *lastEvent = [[accessLog events] lastObject];
     
-    NSDictionary *info = @{@"switchBitrate": @(lastEvent.switchBitrate),
-                           @"indicatedBitrate": @(lastEvent.indicatedBitrate)
-                           };
-    
     _indicatedBitrateLabel.text = [self stringRepresentationFromBitrate:lastEvent.indicatedBitrate];
     _switchBitrateLabel.text = [self stringRepresentationFromBitrate:lastEvent.switchBitrate];
-    
-    NSLog(@"%@", info);
 }
 
 - (void)updatePlayerItemBitrateWithBitrate:(NSNumber *)bitrate
