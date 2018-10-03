@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B789F012164F9F500174255 /* CopyableLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B789F002164F9F500174255 /* CopyableLabel.m */; };
 		4BDF4B46216246B8002EF4BE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BDF4B45216246B8002EF4BE /* AppDelegate.m */; };
 		4BDF4B49216246B8002EF4BE /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BDF4B48216246B8002EF4BE /* ViewController.m */; };
 		4BDF4B4C216246B8002EF4BE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4BDF4B4A216246B8002EF4BE /* Main.storyboard */; };
@@ -17,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4B789EFF2164F9F500174255 /* CopyableLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CopyableLabel.h; sourceTree = "<group>"; };
+		4B789F002164F9F500174255 /* CopyableLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CopyableLabel.m; sourceTree = "<group>"; };
 		4BDF4B41216246B8002EF4BE /* ABRBetweenCodecsSpike.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ABRBetweenCodecsSpike.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BDF4B44216246B8002EF4BE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		4BDF4B45216246B8002EF4BE /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -63,9 +66,11 @@
 			children = (
 				4BDF4B44216246B8002EF4BE /* AppDelegate.h */,
 				4BDF4B5A21638252002EF4BE /* ChooseItemTableViewController.h */,
+				4B789EFF2164F9F500174255 /* CopyableLabel.h */,
 				4BDF4B47216246B8002EF4BE /* ViewController.h */,
 				4BDF4B45216246B8002EF4BE /* AppDelegate.m */,
 				4BDF4B5B21638252002EF4BE /* ChooseItemTableViewController.m */,
+				4B789F002164F9F500174255 /* CopyableLabel.m */,
 				4BDF4B53216246BA002EF4BE /* main.m */,
 				4BDF4B48216246B8002EF4BE /* ViewController.m */,
 				4BDF4B52216246BA002EF4BE /* Info.plist */,
@@ -148,6 +153,7 @@
 			files = (
 				4BDF4B49216246B8002EF4BE /* ViewController.m in Sources */,
 				4BDF4B5C21638252002EF4BE /* ChooseItemTableViewController.m in Sources */,
+				4B789F012164F9F500174255 /* CopyableLabel.m in Sources */,
 				4BDF4B54216246BA002EF4BE /* main.m in Sources */,
 				4BDF4B46216246B8002EF4BE /* AppDelegate.m in Sources */,
 			);

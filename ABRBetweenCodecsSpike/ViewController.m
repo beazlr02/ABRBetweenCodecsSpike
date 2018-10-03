@@ -48,6 +48,7 @@ typedef NSArray<NSNumber *> BitratesArray;
     AVPlayerItem *_playerItem;
     BitratesArray *_availableBitratesWithinTestPlaylist;
     UIImpactFeedbackGenerator *_variantChangedFeedbackGenerator;
+    UILongPressGestureRecognizer *_longPressCurrentPlaylistLabel;
     
     __weak IBOutlet UISegmentedControl *_bitrateSelectionSegmentControl;
     __weak IBOutlet UILabel *_currentPlaylistLabel;
@@ -93,10 +94,23 @@ typedef NSArray<NSNumber *> BitratesArray;
     
     _player = [[AVPlayer alloc] init];
     _variantChangedFeedbackGenerator = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium];
+    
+    _longPressCurrentPlaylistLabel = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressedPlaylistURLLabel:)];
+    [_currentPlaylistLabel addGestureRecognizer:_longPressCurrentPlaylistLabel];
+    
     [self swapToDefaultTestPlaylist];
 }
 
 #pragma mark Private
+
+- (void)longPressedPlaylistURLLabel:(UILongPressGestureRecognizer *)gestureRecognizer
+{
+    BOOL gestureRecognized = [gestureRecognizer state] == UIGestureRecognizerStateRecognized;
+    if (gestureRecognized) {
+        UIView *targetView = [gestureRecognizer view];
+        [self showCopyMenuFromView:targetView];
+    }
+}
 
 - (void)playerItemAccessLogDidProcessNewEntry:(NSNotification *)notification
 {
@@ -147,7 +161,7 @@ typedef NSArray<NSNumber *> BitratesArray;
                                              selector:@selector(playerItemAccessLogDidProcessNewEntry:)
                                                  name:AVPlayerItemNewAccessLogEntryNotification
                                                object:_playerItem];
-
+    
     [self updatePlayerItemBitrateWithBitrate:[_availableBitratesWithinTestPlaylist firstObject]];
     [_player play];
     
@@ -158,6 +172,15 @@ typedef NSArray<NSNumber *> BitratesArray;
 {
     PlayableItem *defaultItem = [PlayableItem defaultPlayableItem];
     [self swapPlayingItemToItem:defaultItem];
+}
+
+- (void)showCopyMenuFromView:(UIView *)targetView
+{
+    [_currentPlaylistLabel becomeFirstResponder];
+    UIMenuController *menuController = [UIMenuController sharedMenuController];
+    [menuController setTargetRect:[targetView frame]
+                           inView:[targetView superview]];
+    [menuController setMenuVisible:YES animated:YES];
 }
 
 @end
