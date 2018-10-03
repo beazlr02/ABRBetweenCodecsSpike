@@ -51,7 +51,6 @@ typedef NSArray<NSNumber *> BitratesArray;
     __weak IBOutlet UISegmentedControl *_bitrateSelectionSegmentControl;
     __weak IBOutlet UILabel *_currentPlaylistLabel;
     __weak IBOutlet UILabel *_indicatedBitrateLabel;
-    __weak IBOutlet UILabel *_observedBitrateLabel;
     __weak IBOutlet UILabel *_switchBitrateLabel;
 }
 
@@ -102,13 +101,11 @@ typedef NSArray<NSNumber *> BitratesArray;
     AVPlayerItemAccessLog *accessLog = [_playerItem accessLog];
     AVPlayerItemAccessLogEvent *lastEvent = [[accessLog events] lastObject];
     
-    NSDictionary *info = @{@"observedBitrate": @(lastEvent.observedBitrate),
-                           @"switchBitrate": @(lastEvent.switchBitrate),
+    NSDictionary *info = @{@"switchBitrate": @(lastEvent.switchBitrate),
                            @"indicatedBitrate": @(lastEvent.indicatedBitrate)
                            };
     
     _indicatedBitrateLabel.text = [self stringRepresentationFromBitrate:lastEvent.indicatedBitrate];
-    _observedBitrateLabel.text = [self stringRepresentationFromBitrate:lastEvent.observedBitrate];
     _switchBitrateLabel.text = [self stringRepresentationFromBitrate:lastEvent.switchBitrate];
     
     NSLog(@"%@", info);
@@ -121,7 +118,7 @@ typedef NSArray<NSNumber *> BitratesArray;
 
 - (NSString *)stringRepresentationFromBitrate:(double)bitrate
 {
-    return [NSString stringWithFormat:@"%i", (int)bitrate];
+    return [NSString stringWithFormat:@"%i bits/s", (int)bitrate];
 }
 
 - (void)swapPlayingItemToItem:(PlayableItem *)playableItem
