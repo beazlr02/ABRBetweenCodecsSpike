@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "ChooseItemTableViewController.h"
+#import "FetchBitratesOperation.h"
 #import <AVFoundation/AVFoundation.h>
 
 typedef NSArray<NSNumber *> BitratesArray;
@@ -49,6 +50,7 @@ typedef NSArray<NSNumber *> BitratesArray;
     BitratesArray *_availableBitratesWithinTestPlaylist;
     UIImpactFeedbackGenerator *_variantChangedFeedbackGenerator;
     UILongPressGestureRecognizer *_longPressCurrentPlaylistLabel;
+    NSOperationQueue *_parseBitratesOperationQueue;
     
     __weak IBOutlet UISegmentedControl *_bitrateSelectionSegmentControl;
     __weak IBOutlet UILabel *_currentPlaylistLabel;
@@ -98,6 +100,10 @@ typedef NSArray<NSNumber *> BitratesArray;
     _longPressCurrentPlaylistLabel = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressedPlaylistURLLabel:)];
     [_currentPlaylistLabel addGestureRecognizer:_longPressCurrentPlaylistLabel];
     
+    _parseBitratesOperationQueue = [[NSOperationQueue alloc] init];
+    [_parseBitratesOperationQueue setName:@"Parse Bitrates From Playlist"];
+    [_parseBitratesOperationQueue setQualityOfService:NSQualityOfServiceUtility];
+    
     [self swapToDefaultTestPlaylist];
 }
 
@@ -133,18 +139,22 @@ typedef NSArray<NSNumber *> BitratesArray;
     return [NSString stringWithFormat:@"%i bits/s", (int)bitrate];
 }
 
-- (void)swapPlayingItemToItem:(PlayableItem *)playableItem
+- (void)updateVariantBitratesWithBitrates:(NSArray<NSNumber *> *)bitrates
 {
     [_bitrateSelectionSegmentControl removeAllSegments];
-    _availableBitratesWithinTestPlaylist = playableItem.variantBitrates;
     
+    _availableBitratesWithinTestPlaylist = bitrates;
     [_availableBitratesWithinTestPlaylist enumerateObjectsUsingBlock:^(NSNumber *availableBitrateFromPlaylist, NSUInteger idx, __unused BOOL *stop) {
         NSString *bitrateString = [NSString stringWithFormat:@"%li", [availableBitrateFromPlaylist integerValue]];
         [self->_bitrateSelectionSegmentControl insertSegmentWithTitle:bitrateString atIndex:idx animated:NO];
     }];
     
     [_bitrateSelectionSegmentControl setSelectedSegmentIndex:0];
-    
+    [self updatePlayerItemBitrateWithBitrate:[bitrates firstObject]];
+}
+
+- (void)swapPlayingItemToItem:(PlayableItem *)playableItem
+{
     AVAsset *asset = [AVURLAsset URLAssetWithURL:playableItem.playlistURL options:nil];
     AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
     [_player replaceCurrentItemWithPlayerItem:playerItem];
@@ -162,10 +172,20 @@ typedef NSArray<NSNumber *> BitratesArray;
                                                  name:AVPlayerItemNewAccessLogEntryNotification
                                                object:_playerItem];
     
-    [self updatePlayerItemBitrateWithBitrate:[_availableBitratesWithinTestPlaylist firstObject]];
     [_player play];
     
     _currentPlaylistLabel.text = [playableItem.playlistURL absoluteString];
+    
+    [self updateVariantBitratesWithBitrates:@[]];
+    
+    __weak typeof(self) weakSelf = self;
+    FetchBitratesOperation *fetchBitratesOperation = [[FetchBitratesOperation alloc] initWithPlaylistURL:[playableItem playlistURL] completionHandler:^(NSArray<NSNumber *> *bitrates) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf updateVariantBitratesWithBitrates:bitrates];
+        });
+    }];
+    
+    [_parseBitratesOperationQueue addOperation:fetchBitratesOperation];
 }
 
 - (void)swapToDefaultTestPlaylist
