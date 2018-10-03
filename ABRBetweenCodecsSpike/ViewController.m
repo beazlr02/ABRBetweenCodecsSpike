@@ -9,42 +9,13 @@
 #import "ViewController.h"
 #import "ChooseItemTableViewController.h"
 #import "FetchBitratesOperation.h"
+#import "PlaylistRepository.h"
 #import <AVFoundation/AVFoundation.h>
 
 typedef NSArray<NSNumber *> BitratesArray;
 
-@interface PlayableItem : NSObject
-
-@property (nonatomic, strong, readonly) NSURL *playlistURL;
-@property (nonatomic, copy, readonly) BitratesArray *variantBitrates;
-
-+ (instancetype)defaultPlayableItem;
-+ (instancetype)playableItemWithPlaylistURL:(NSURL *)playlistURL variantBitrates:(BitratesArray *)variantBitrates;
-
-@end
-
-@implementation PlayableItem
-
-+ (instancetype)defaultPlayableItem
-{
-    NSURL *URL = [NSURL URLWithString:@"http://as-hls-uk-live.akamaized.net/pool_6/live/bbc_radio_one/bbc_radio_one.isml/.m3u8"];
-    NSArray *availableBitrates = @[@(56000), @(112000), @(150000), @(374000)];
-    
-    return [self playableItemWithPlaylistURL:URL variantBitrates:availableBitrates];
-}
-
-+ (instancetype)playableItemWithPlaylistURL:(NSURL *)playlistURL variantBitrates:(BitratesArray *)variantBitrates
-{
-    PlayableItem *item = [[self alloc] init];
-    item->_playlistURL = playlistURL;
-    item->_variantBitrates = [variantBitrates copy];
-    
-    return item;
-}
-
-@end
-
 @implementation ViewController {
+    NSURL *_defaultPlayableItemURL;
     AVPlayer *_player;
     AVPlayerItem *_playerItem;
     BitratesArray *_availableBitratesWithinTestPlaylist;
@@ -67,16 +38,16 @@ typedef NSArray<NSNumber *> BitratesArray;
 
 - (IBAction)unwindFromSelectItemViewControllerWithSelectedURLSegue:(UIStoryboardSegue *)segue
 {
-    PlayableItem *item = [PlayableItem defaultPlayableItem];
+    NSURL *URL = _defaultPlayableItemURL;
     ChooseItemTableViewController *chooseItemViewController = (ChooseItemTableViewController *)[segue sourceViewController];
     if ([chooseItemViewController isKindOfClass:[ChooseItemTableViewController class]]) {
-        NSURL *URL = [chooseItemViewController playlistURL];
-        if (URL) {
-            item = [PlayableItem playableItemWithPlaylistURL:URL variantBitrates:item.variantBitrates];
+        NSURL *chosenURL = [chooseItemViewController playlistURL];
+        if (chosenURL) {
+            URL = chosenURL;
         }
     }
     
-    [self swapPlayingItemToItem:item];
+    [self beginPlayingContentAtURL:URL];
     [self dismissViewControllerAnimated:YES completion:^{}];
 }
 
@@ -93,6 +64,8 @@ typedef NSArray<NSNumber *> BitratesArray;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    _defaultPlayableItemURL = [PlaylistRepository radioOne];
     
     _player = [[AVPlayer alloc] init];
     _variantChangedFeedbackGenerator = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium];
@@ -153,9 +126,9 @@ typedef NSArray<NSNumber *> BitratesArray;
     [self updatePlayerItemBitrateWithBitrate:[bitrates firstObject]];
 }
 
-- (void)swapPlayingItemToItem:(PlayableItem *)playableItem
+- (void)beginPlayingContentAtURL:(NSURL *)playableItem
 {
-    AVAsset *asset = [AVURLAsset URLAssetWithURL:playableItem.playlistURL options:nil];
+    AVAsset *asset = [AVURLAsset URLAssetWithURL:playableItem options:nil];
     AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
     [_player replaceCurrentItemWithPlayerItem:playerItem];
     
@@ -174,12 +147,10 @@ typedef NSArray<NSNumber *> BitratesArray;
     
     [_player play];
     
-    _currentPlaylistLabel.text = [playableItem.playlistURL absoluteString];
-    
-    [self updateVariantBitratesWithBitrates:@[]];
+    _currentPlaylistLabel.text = [playableItem absoluteString];
     
     __weak typeof(self) weakSelf = self;
-    FetchBitratesOperation *fetchBitratesOperation = [[FetchBitratesOperation alloc] initWithPlaylistURL:[playableItem playlistURL] completionHandler:^(NSArray<NSNumber *> *bitrates) {
+    FetchBitratesOperation *fetchBitratesOperation = [[FetchBitratesOperation alloc] initWithPlaylistURL:playableItem completionHandler:^(NSArray<NSNumber *> *bitrates) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf updateVariantBitratesWithBitrates:bitrates];
         });
@@ -190,8 +161,7 @@ typedef NSArray<NSNumber *> BitratesArray;
 
 - (void)swapToDefaultTestPlaylist
 {
-    PlayableItem *defaultItem = [PlayableItem defaultPlayableItem];
-    [self swapPlayingItemToItem:defaultItem];
+    [self beginPlayingContentAtURL:_defaultPlayableItemURL];
 }
 
 - (void)showCopyMenuFromView:(UIView *)targetView

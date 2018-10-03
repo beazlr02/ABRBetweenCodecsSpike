@@ -7,9 +7,10 @@
 //
 
 #import "ChooseItemTableViewController.h"
+#import "PlaylistRepository.h"
 
 @implementation ChooseItemTableViewController {
-    NSArray<NSString *> *_predefinedPlaylistURLs;
+    NSArray<NSURL *> *_predefinedPlaylistURLs;
     __weak IBOutlet UITextField *_playlistURLTextField;
 }
 
@@ -17,12 +18,11 @@
 {
     [super viewDidLoad];
     
-    _predefinedPlaylistURLs = @[@"http://as-hls-uk-live.akamaized.net/pool_6/live/bbc_radio_one/bbc_radio_one.isml/.m3u8",
-                                @"http://as-dash-uk-live.akamaized.net/pool_7/live/bbc_radio_two/bbc_radio_two.isml/.m3u8",
-                                @"http://as-dash-uk-live.akamaized.net/pool_7/live/bbc_radio_three/bbc_radio_three.isml/.m3u8",
-                                @"http://as-dash-uk-live.akamaized.net/pool_6/live/bbc_radio_fourfm/bbc_radio_fourfm.isml/.m3u8",
-                                @"http://as-dash-uk-live.akamaized.net/pool_6/live/bbc_radio_five_live/bbc_radio_five_live.isml/.m3u8"
-                                ];
+    _predefinedPlaylistURLs = @[[PlaylistRepository radioOne],
+                                [PlaylistRepository radioTwo],
+                                [PlaylistRepository radioThree],
+                                [PlaylistRepository radioFour],
+                                [PlaylistRepository radioFiveLive]];
 }
 
 - (NSURL *)playlistURL
@@ -35,8 +35,8 @@
 
 - (IBAction)radioButtonTapped:(UIButton *)sender
 {
-    NSString *selectedURL = _predefinedPlaylistURLs[sender.tag];
-    _playlistURLTextField.text = selectedURL;
+    NSURL *selectedURL = _predefinedPlaylistURLs[sender.tag];
+    [_playlistURLTextField setText:[selectedURL absoluteString]];
 }
 
 @end
