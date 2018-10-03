@@ -1,12 +1,12 @@
 //
-//  ViewController.m
+//  PlaylistInformationViewController.m
 //  ABRBetweenCodecsSpike
 //
 //  Created by Thomas Sherwood - TV&Mobile Platforms - Core Engineering on 01/10/2018.
 //  Copyright © 2018 BBC. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "PlaylistInformationViewController.h"
 #import "ChooseItemTableViewController.h"
 #import "FetchBitratesOperation.h"
 #import "PlaylistRepository.h"
@@ -14,7 +14,7 @@
 
 typedef NSArray<NSNumber *> BitratesArray;
 
-@implementation ViewController {
+@implementation PlaylistInformationViewController {
     NSURL *_defaultPlayableItemURL;
     AVPlayer *_player;
     AVPlayerItem *_playerItem;

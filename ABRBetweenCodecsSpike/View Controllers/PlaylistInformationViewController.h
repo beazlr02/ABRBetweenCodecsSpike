@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  PlaylistInformationViewController.h
 //  ABRBetweenCodecsSpike
 //
 //  Created by Thomas Sherwood - TV&Mobile Platforms - Core Engineering on 01/10/2018.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UITableViewController
-
-
+@interface PlaylistInformationViewController : UITableViewController
 @end
 
