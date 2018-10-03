@@ -10,6 +10,7 @@
 		4B789F012164F9F500174255 /* CopyableLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B789F002164F9F500174255 /* CopyableLabel.m */; };
 		4B789F042165010100174255 /* FetchBitratesOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B789F032165010100174255 /* FetchBitratesOperation.m */; };
 		4B789F07216507E500174255 /* PlaylistRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B789F06216507E500174255 /* PlaylistRepository.m */; };
+		4B789F0F21650B3700174255 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B789F0E21650B3700174255 /* Player.m */; };
 		4BDF4B46216246B8002EF4BE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BDF4B45216246B8002EF4BE /* AppDelegate.m */; };
 		4BDF4B49216246B8002EF4BE /* PlaylistInformationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BDF4B48216246B8002EF4BE /* PlaylistInformationViewController.m */; };
 		4BDF4B4C216246B8002EF4BE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4BDF4B4A216246B8002EF4BE /* Main.storyboard */; };
@@ -27,6 +28,8 @@
 		4B789F05216507E500174255 /* PlaylistRepository.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlaylistRepository.h; sourceTree = "<group>"; };
 		4B789F06216507E500174255 /* PlaylistRepository.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlaylistRepository.m; sourceTree = "<group>"; };
 		4B789F0821650AC400174255 /* PlaylistInformationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistInformationViewController.h; sourceTree = "<group>"; };
+		4B789F0D21650B3700174255 /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
+		4B789F0E21650B3700174255 /* Player.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
 		4BDF4B41216246B8002EF4BE /* ABRBetweenCodecsSpike.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ABRBetweenCodecsSpike.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BDF4B44216246B8002EF4BE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		4BDF4B45216246B8002EF4BE /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -89,6 +92,15 @@
 			path = Operations;
 			sourceTree = "<group>";
 		};
+		4B789F1021650B4100174255 /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				4B789F0D21650B3700174255 /* Player.h */,
+				4B789F0E21650B3700174255 /* Player.m */,
+			);
+			path = Player;
+			sourceTree = "<group>";
+		};
 		4BDF4B38216246B8002EF4BE = {
 			isa = PBXGroup;
 			children = (
@@ -116,6 +128,7 @@
 				4BDF4B4F216246BA002EF4BE /* LaunchScreen.storyboard */,
 				4BDF4B4A216246B8002EF4BE /* Main.storyboard */,
 				4B789F0C21650AF700174255 /* Operations */,
+				4B789F1021650B4100174255 /* Player */,
 				4B789F0B21650AEF00174255 /* Repositores */,
 				4B789F0921650ADC00174255 /* View Controllers */,
 				4B789F0A21650AE800174255 /* Views */,
@@ -193,6 +206,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B789F0F21650B3700174255 /* Player.m in Sources */,
 				4B789F042165010100174255 /* FetchBitratesOperation.m in Sources */,
 				4BDF4B49216246B8002EF4BE /* PlaylistInformationViewController.m in Sources */,
 				4BDF4B5C21638252002EF4BE /* ChooseItemTableViewController.m in Sources */,

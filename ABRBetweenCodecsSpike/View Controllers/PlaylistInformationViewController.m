@@ -8,20 +8,17 @@
 
 #import "PlaylistInformationViewController.h"
 #import "ChooseItemTableViewController.h"
-#import "FetchBitratesOperation.h"
 #import "PlaylistRepository.h"
-#import <AVFoundation/AVFoundation.h>
+#import "Player.h"
 
-typedef NSArray<NSNumber *> BitratesArray;
+@interface PlaylistInformationViewController () <PlayerDelegate>
+@end
 
 @implementation PlaylistInformationViewController {
+    Player *_player;
     NSURL *_defaultPlayableItemURL;
-    AVPlayer *_player;
-    AVPlayerItem *_playerItem;
-    BitratesArray *_availableBitratesWithinTestPlaylist;
     UIImpactFeedbackGenerator *_variantChangedFeedbackGenerator;
     UILongPressGestureRecognizer *_longPressCurrentPlaylistLabel;
-    NSOperationQueue *_parseBitratesOperationQueue;
     
     __weak IBOutlet UISegmentedControl *_bitrateSelectionSegmentControl;
     __weak IBOutlet UILabel *_currentPlaylistLabel;
@@ -47,7 +44,7 @@ typedef NSArray<NSNumber *> BitratesArray;
         }
     }
     
-    [self beginPlayingContentAtURL:URL];
+    [_player beginPlaybackOfContentsFromURL:URL];
     [self dismissViewControllerAnimated:YES completion:^{}];
 }
 
@@ -55,8 +52,7 @@ typedef NSArray<NSNumber *> BitratesArray;
 
 - (IBAction)segmentControlValueDidChange:(UISegmentedControl *)sender
 {
-    NSNumber *bitrate = _availableBitratesWithinTestPlaylist[sender.selectedSegmentIndex];
-    [self updatePlayerItemBitrateWithBitrate:bitrate];
+    [_player capPlaybackBitrateToBitrateAtIndex:[sender selectedSegmentIndex]];
 }
 
 #pragma mark Overrides
@@ -65,19 +61,47 @@ typedef NSArray<NSNumber *> BitratesArray;
 {
     [super viewDidLoad];
     
+    _player = [[Player alloc] init];
+    [_player setDelegate:self];
+    
     _defaultPlayableItemURL = [PlaylistRepository radioOne];
     
-    _player = [[AVPlayer alloc] init];
     _variantChangedFeedbackGenerator = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium];
     
     _longPressCurrentPlaylistLabel = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressedPlaylistURLLabel:)];
     [_currentPlaylistLabel addGestureRecognizer:_longPressCurrentPlaylistLabel];
     
-    _parseBitratesOperationQueue = [[NSOperationQueue alloc] init];
-    [_parseBitratesOperationQueue setName:@"Parse Bitrates From Playlist"];
-    [_parseBitratesOperationQueue setQualityOfService:NSQualityOfServiceUtility];
+    [_player beginPlaybackOfContentsFromURL:_defaultPlayableItemURL];
+}
+
+#pragma mark PlayerDelegate
+
+- (void)player:(Player *)player willTransitionToPlayingFromContentsAtURL:(NSURL *)URL
+{
+    [_currentPlaylistLabel setText:[URL absoluteString]];
+}
+
+- (void)player:(Player *)player didProducePlaybackBitrateData:(PlayerBitrateData *)bitrateData
+{
+    [_variantChangedFeedbackGenerator impactOccurred];
     
-    [self swapToDefaultTestPlaylist];
+    _indicatedBitrateLabel.text = [self stringRepresentationFromBitrate:bitrateData.indicatedBitrate];
+    _switchBitrateLabel.text = [self stringRepresentationFromBitrate:bitrateData.switchBitrate];
+}
+
+- (void)player:(Player *)player didProduceAvailableVariantBitrates:(NSArray<NSNumber *> *)variantBitrates
+{
+    [_bitrateSelectionSegmentControl removeAllSegments];
+    
+    [variantBitrates enumerateObjectsUsingBlock:^(NSNumber *availableBitrateFromPlaylist, NSUInteger idx, __unused BOOL *stop) {
+        NSString *bitrateString = [NSString stringWithFormat:@"%li", [availableBitrateFromPlaylist integerValue]];
+        [self->_bitrateSelectionSegmentControl insertSegmentWithTitle:bitrateString atIndex:idx animated:NO];
+    }];
+}
+
+- (void)player:(Player *)player didCapPlaybackBitrateToVariantBitrateAtIndex:(NSUInteger)index
+{
+    [_bitrateSelectionSegmentControl setSelectedSegmentIndex:index];
 }
 
 #pragma mark Private
@@ -91,77 +115,9 @@ typedef NSArray<NSNumber *> BitratesArray;
     }
 }
 
-- (void)playerItemAccessLogDidProcessNewEntry:(NSNotification *)notification
-{
-    [_variantChangedFeedbackGenerator impactOccurred];
-    
-    AVPlayerItemAccessLog *accessLog = [_playerItem accessLog];
-    AVPlayerItemAccessLogEvent *lastEvent = [[accessLog events] lastObject];
-    
-    _indicatedBitrateLabel.text = [self stringRepresentationFromBitrate:lastEvent.indicatedBitrate];
-    _switchBitrateLabel.text = [self stringRepresentationFromBitrate:lastEvent.switchBitrate];
-}
-
-- (void)updatePlayerItemBitrateWithBitrate:(NSNumber *)bitrate
-{
-    _playerItem.preferredPeakBitRate = [bitrate doubleValue];
-}
-
 - (NSString *)stringRepresentationFromBitrate:(double)bitrate
 {
     return [NSString stringWithFormat:@"%i bits/s", (int)bitrate];
-}
-
-- (void)updateVariantBitratesWithBitrates:(NSArray<NSNumber *> *)bitrates
-{
-    [_bitrateSelectionSegmentControl removeAllSegments];
-    
-    _availableBitratesWithinTestPlaylist = bitrates;
-    [_availableBitratesWithinTestPlaylist enumerateObjectsUsingBlock:^(NSNumber *availableBitrateFromPlaylist, NSUInteger idx, __unused BOOL *stop) {
-        NSString *bitrateString = [NSString stringWithFormat:@"%li", [availableBitrateFromPlaylist integerValue]];
-        [self->_bitrateSelectionSegmentControl insertSegmentWithTitle:bitrateString atIndex:idx animated:NO];
-    }];
-    
-    [_bitrateSelectionSegmentControl setSelectedSegmentIndex:0];
-    [self updatePlayerItemBitrateWithBitrate:[bitrates firstObject]];
-}
-
-- (void)beginPlayingContentAtURL:(NSURL *)playableItem
-{
-    AVAsset *asset = [AVURLAsset URLAssetWithURL:playableItem options:nil];
-    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
-    [_player replaceCurrentItemWithPlayerItem:playerItem];
-    
-    if (_playerItem) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:AVPlayerItemNewAccessLogEntryNotification
-                                                      object:_playerItem];
-    }
-    
-    _playerItem = playerItem;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(playerItemAccessLogDidProcessNewEntry:)
-                                                 name:AVPlayerItemNewAccessLogEntryNotification
-                                               object:_playerItem];
-    
-    [_player play];
-    
-    _currentPlaylistLabel.text = [playableItem absoluteString];
-    
-    __weak typeof(self) weakSelf = self;
-    FetchBitratesOperation *fetchBitratesOperation = [[FetchBitratesOperation alloc] initWithPlaylistURL:playableItem completionHandler:^(NSArray<NSNumber *> *bitrates) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf updateVariantBitratesWithBitrates:bitrates];
-        });
-    }];
-    
-    [_parseBitratesOperationQueue addOperation:fetchBitratesOperation];
-}
-
-- (void)swapToDefaultTestPlaylist
-{
-    [self beginPlayingContentAtURL:_defaultPlayableItemURL];
 }
 
 - (void)showCopyMenuFromView:(UIView *)targetView
