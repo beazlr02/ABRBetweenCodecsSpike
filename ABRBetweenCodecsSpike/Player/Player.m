@@ -18,9 +18,9 @@
 
 @implementation Player {
     AVPlayer *_player;
-    AVPlayerItem *_playerItem;
-    NSOperationQueue *_parseBitratesOperationQueue;
-    NSArray<NSNumber *> *_variantBitrates;
+    AVPlayerItem *_currentlyPlayingPlayerItem;
+    NSOperationQueue *_playlistVariantBitratesParsingQueue;
+    NSArray<NSNumber *> *_availableVariantBitratesFromCurrentPlaylist;
 }
 
 - (instancetype)init
@@ -29,72 +29,108 @@
     if (self) {
         _player = [[AVPlayer alloc] init];
         
-        _parseBitratesOperationQueue = [[NSOperationQueue alloc] init];
-        [_parseBitratesOperationQueue setName:@"Parse Bitrates From Playlist"];
-        [_parseBitratesOperationQueue setQualityOfService:NSQualityOfServiceUtility];
+        _playlistVariantBitratesParsingQueue = [[NSOperationQueue alloc] init];
+        [_playlistVariantBitratesParsingQueue setName:@"Parse Bitrates From Playlist"];
+        [_playlistVariantBitratesParsingQueue setQualityOfService:NSQualityOfServiceUtility];
     }
     
     return self;
 }
 
+#pragma mark Bitrate Capping
+
 - (void)capPlaybackBitrateToBitrateAtIndex:(NSUInteger)variantIndex
 {
-    NSNumber *variantBitrate = [_variantBitrates objectAtIndex:variantIndex];
-    [_playerItem setPreferredPeakBitRate:[variantBitrate doubleValue]];
+    [self setPeakBitrateToAvailableVariantBitrateAtIndex:variantIndex];
     [[self delegate] player:self didCapPlaybackBitrateToVariantBitrateAtIndex:variantIndex];
 }
 
+- (void)setPeakBitrateToAvailableVariantBitrateAtIndex:(NSUInteger)variantIndex
+{
+    NSNumber *variantBitrate = [_availableVariantBitratesFromCurrentPlaylist objectAtIndex:variantIndex];
+    [_currentlyPlayingPlayerItem setPreferredPeakBitRate:[variantBitrate doubleValue]];
+}
+
+#pragma mark Playback
+
 - (void)beginPlaybackOfContentsFromURL:(NSURL *)URL
+{
+    [self stopObservingNewAccessLogEntriesFromCurrentPlayerItem];
+    [self beginPlayingContentAtURL:URL];
+    [self fetchVariantBitratesFromPlaylistAtURL:URL];
+}
+
+- (void)stopObservingNewAccessLogEntriesFromCurrentPlayerItem
+{
+    if (_currentlyPlayingPlayerItem) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:AVPlayerItemNewAccessLogEntryNotification
+                                                      object:_currentlyPlayingPlayerItem];
+    }
+}
+
+- (void)beginPlayingContentAtURL:(NSURL *)URL
 {
     [[self delegate] player:self willTransitionToPlayingFromContentsAtURL:URL];
     
-    if (_playerItem) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:AVPlayerItemNewAccessLogEntryNotification
-                                                      object:_playerItem];
-    }
-    
     AVAsset *asset = [AVURLAsset URLAssetWithURL:URL options:nil];
     AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
-    _playerItem = playerItem;
+    _currentlyPlayingPlayerItem = playerItem;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerItemAccessLogDidProcessNewEntry:)
                                                  name:AVPlayerItemNewAccessLogEntryNotification
-                                               object:_playerItem];
+                                               object:_currentlyPlayingPlayerItem];
     
     [_player replaceCurrentItemWithPlayerItem:playerItem];
     [_player play];
-    
+}
+
+- (void)fetchVariantBitratesFromPlaylistAtURL:(NSURL *)URL
+{
     __weak typeof(self) weakSelf = self;
+    __block NSArray<NSNumber *> *variantBitrates;
     FetchBitratesOperation *fetchBitratesOperation = [[FetchBitratesOperation alloc] initWithPlaylistURL:URL completionHandler:^(NSArray<NSNumber *> *bitrates) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf variantBitratesAvailable:bitrates];
-        });
+        variantBitrates = bitrates;
     }];
     
-    [_parseBitratesOperationQueue addOperation:fetchBitratesOperation];
+    NSBlockOperation *updateVariantBitratesOperation = [NSBlockOperation blockOperationWithBlock:^{
+        [weakSelf updateCurrentVariantBitrates:variantBitrates];
+    }];
+    
+    [updateVariantBitratesOperation addDependency:fetchBitratesOperation];
+    [_playlistVariantBitratesParsingQueue addOperation:fetchBitratesOperation];
+    [[NSOperationQueue mainQueue] addOperation:updateVariantBitratesOperation];
 }
 
 - (void)playerItemAccessLogDidProcessNewEntry:(NSNotification *)notification
+{
+    PlayerBitrateData * data = [self createCurrentBitrateDataFromNewAccessLogEntryNotification:notification];
+    [[self delegate] player:self didProducePlaybackBitrateData:data];
+}
+
+- (void)updateCurrentVariantBitrates:(NSArray<NSNumber *> *)variantBitrates
+{
+    _availableVariantBitratesFromCurrentPlaylist = variantBitrates;
+    [[self delegate] player:self didProduceAvailableVariantBitrates:variantBitrates];
+    [self capPlaybackBitrateToFirstAvailableVariant];
+}
+
+- (void)capPlaybackBitrateToFirstAvailableVariant
+{
+    if ([_availableVariantBitratesFromCurrentPlaylist count] > 0) {
+        [self capPlaybackBitrateToBitrateAtIndex:0];
+    }
+}
+
+- (PlayerBitrateData *)createCurrentBitrateDataFromNewAccessLogEntryNotification:(NSNotification *)notification
 {
     AVPlayerItem *playerItem = (AVPlayerItem *)[notification object];
     AVPlayerItemAccessLog *accessLog = [playerItem accessLog];
     AVPlayerItemAccessLogEvent *lastEvent = [[accessLog events] lastObject];
     
-    PlayerBitrateData *data = [[PlayerBitrateData alloc] initWithIndicatedBitrate:lastEvent.indicatedBitrate
-                                                                    switchBitrate:lastEvent.switchBitrate];
-    [[self delegate] player:self didProducePlaybackBitrateData:data];
-}
-
-- (void)variantBitratesAvailable:(NSArray<NSNumber *> *)variantBitrates
-{
-    _variantBitrates = variantBitrates;
-    [[self delegate] player:self didProduceAvailableVariantBitrates:variantBitrates];
-    
-    if ([variantBitrates count] > 0) {
-        [self capPlaybackBitrateToBitrateAtIndex:0];
-    }
+    return [[PlayerBitrateData alloc] initWithIndicatedBitrate:lastEvent.indicatedBitrate
+                                                 switchBitrate:lastEvent.switchBitrate];
 }
 
 @end
