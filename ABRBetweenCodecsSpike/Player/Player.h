@@ -10,6 +10,7 @@
 
 @class Player;
 @class PlayerBitrateData;
+@class Recording;
 
 @protocol PlayerDelegate <NSObject>
 
@@ -17,15 +18,20 @@
 - (void)player:(Player *)player didProducePlaybackBitrateData:(PlayerBitrateData *)bitrateData;
 - (void)player:(Player *)player didProduceAvailableVariantBitrates:(NSArray<NSNumber *> *)variantBitrates;
 - (void)player:(Player *)player didCapPlaybackBitrateToVariantBitrateAtIndex:(NSUInteger)index;
+- (void)playerDidBeginRecording:(Player *)player;
+- (void)player:(Player *)player didProduceRecording:(Recording *)recording;
 
 @end
 
 @interface Player : NSObject
 
 @property (nonatomic, weak, nullable) id<PlayerDelegate> delegate;
+@property (nonatomic, assign, readonly, getter=isRecording) BOOL recording;
 
 - (void)beginPlaybackOfContentsFromURL:(NSURL *)URL;
 - (void)capPlaybackBitrateToBitrateAtIndex:(NSUInteger)variantIndex;
+- (void)startRecording;
+- (void)stopRecording;
 
 @end
 
@@ -36,4 +42,7 @@
 @property (nonatomic, readonly) double indicatedBitrate;
 @property (nonatomic, readonly) double switchBitrate;
 
+@end
+
+@interface Recording : NSObject
 @end

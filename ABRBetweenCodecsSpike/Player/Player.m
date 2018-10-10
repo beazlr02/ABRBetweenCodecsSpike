@@ -133,7 +133,25 @@
                                                  switchBitrate:lastEvent.switchBitrate];
 }
 
+#pragma mark Recording
+
+- (void)startRecording
+{
+    _recording = YES;
+    [[self delegate] playerDidBeginRecording:self];
+}
+
+- (void)stopRecording
+{
+    _recording = NO;
+    
+    Recording *recording = [[Recording alloc] init];
+    [[self delegate] player:self didProduceRecording:recording];
+}
+
 @end
+
+#pragma mark -
 
 @implementation PlayerBitrateData
 
@@ -148,4 +166,9 @@
     return self;
 }
 
+@end
+
+#pragma mark -
+
+@implementation Recording
 @end
