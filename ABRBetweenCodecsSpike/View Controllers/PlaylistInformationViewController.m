@@ -17,7 +17,7 @@
 @implementation PlaylistInformationViewController {
     Player *_player;
     NSURL *_defaultPlayableItemURL;
-    UIImpactFeedbackGenerator *_variantChangedFeedbackGenerator;
+    id _variantChangedFeedbackGenerator;
     UILongPressGestureRecognizer *_longPressCurrentPlaylistLabel;
     
     __weak IBOutlet UISegmentedControl *_bitrateSelectionSegmentControl;
@@ -66,7 +66,9 @@
     
     _defaultPlayableItemURL = [PlaylistRepository radioOne];
     
-    _variantChangedFeedbackGenerator = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium];
+    if (@available(iOS 10.0, *)) {
+        _variantChangedFeedbackGenerator = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium];
+    }
     
     _longPressCurrentPlaylistLabel = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressedPlaylistURLLabel:)];
     [_currentPlaylistLabel addGestureRecognizer:_longPressCurrentPlaylistLabel];
@@ -94,7 +96,7 @@
     [_bitrateSelectionSegmentControl removeAllSegments];
     
     [variantBitrates enumerateObjectsUsingBlock:^(NSNumber *availableBitrateFromPlaylist, NSUInteger idx, __unused BOOL *stop) {
-        NSString *bitrateString = [NSString stringWithFormat:@"%li", [availableBitrateFromPlaylist integerValue]];
+        NSString *bitrateString = [NSString stringWithFormat:@"%li", (long)[availableBitrateFromPlaylist integerValue]];
         [self->_bitrateSelectionSegmentControl insertSegmentWithTitle:bitrateString atIndex:idx animated:NO];
     }];
 }
