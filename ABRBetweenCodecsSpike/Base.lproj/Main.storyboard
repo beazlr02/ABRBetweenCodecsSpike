@@ -41,41 +41,10 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="RECORDING" id="4BC-3U-RRG">
-                                <string key="footerTitle">Once finished recording, an activity sheet will appear allowing you to send the file over email or other supported apps. The file is not persisted and will need to be re-recorded if the share sheet is cancelled.</string>
-                                <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="78O-iy-oqI">
-                                        <rect key="frame" x="0.0" y="163" width="375" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="78O-iy-oqI" id="d4b-hA-pKp">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5sG-oB-pjF">
-                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="43.5" id="rHd-84-NsX"/>
-                                                    </constraints>
-                                                    <state key="normal" title="Start Recording"/>
-                                                    <connections>
-                                                        <action selector="toggleRecordingButtonTapped:" destination="Wfl-TW-G3T" eventType="touchUpInside" id="wTF-5K-UHh"/>
-                                                    </connections>
-                                                </button>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstAttribute="bottom" secondItem="5sG-oB-pjF" secondAttribute="bottom" id="0li-Pt-F2Y"/>
-                                                <constraint firstAttribute="trailing" secondItem="5sG-oB-pjF" secondAttribute="trailing" id="75F-B3-TR5"/>
-                                                <constraint firstItem="5sG-oB-pjF" firstAttribute="leading" secondItem="d4b-hA-pKp" secondAttribute="leading" id="FTm-uY-zYd"/>
-                                                <constraint firstItem="5sG-oB-pjF" firstAttribute="top" secondItem="d4b-hA-pKp" secondAttribute="top" id="MAo-97-Iek"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </cells>
-                            </tableViewSection>
                             <tableViewSection headerTitle="VARIANT CAPPING BITRATE" id="fRm-AH-7el">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="bEI-gO-3Sj">
-                                        <rect key="frame" x="0.0" y="323" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="155.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="bEI-gO-3Sj" id="S3v-wG-x1q">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -105,7 +74,7 @@
                             <tableViewSection headerTitle="BITRATES" id="bQP-3z-FRQ">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" textLabel="e4S-cU-xkf" detailTextLabel="3RV-hi-dca" style="IBUITableViewCellStyleValue2" id="bHh-Zb-cJj">
-                                        <rect key="frame" x="0.0" y="423" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="255.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="bHh-Zb-cJj" id="p6t-g8-aiH">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -129,7 +98,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" textLabel="6pI-Dj-gMk" detailTextLabel="58C-aa-K6i" style="IBUITableViewCellStyleValue2" id="ERX-tT-SLd">
-                                        <rect key="frame" x="0.0" y="467" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="299.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ERX-tT-SLd" id="gWz-ta-adR">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -172,7 +141,6 @@
                         <outlet property="_currentPlaylistLabel" destination="pto-l0-tVJ" id="v77-7P-xSB"/>
                         <outlet property="_indicatedBitrateLabel" destination="3RV-hi-dca" id="Adl-Jn-4N8"/>
                         <outlet property="_switchBitrateLabel" destination="58C-aa-K6i" id="HSc-t8-FnU"/>
-                        <outlet property="_toggleRecordingStateButton" destination="5sG-oB-pjF" id="ExP-m7-Ja1"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vtg-Qn-Us7" userLabel="First Responder" sceneMemberID="firstResponder"/>

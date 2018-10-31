@@ -18,8 +18,6 @@
 - (void)player:(Player *)player didProducePlaybackBitrateData:(PlayerBitrateData *)bitrateData;
 - (void)player:(Player *)player didProduceAvailableVariantBitrates:(NSArray<NSNumber *> *)variantBitrates;
 - (void)player:(Player *)player didCapPlaybackBitrateToVariantBitrateAtIndex:(NSUInteger)index;
-- (void)playerDidBeginRecording:(Player *)player;
-- (void)player:(Player *)player didProduceRecording:(Recording *)recording;
 
 @end
 
@@ -30,8 +28,6 @@
 
 - (void)beginPlaybackOfContentsFromURL:(NSURL *)URL;
 - (void)capPlaybackBitrateToBitrateAtIndex:(NSUInteger)variantIndex;
-- (void)startRecording;
-- (void)stopRecording;
 
 @end
 

@@ -11,9 +11,6 @@
 #import "PlaylistRepository.h"
 #import "Player.h"
 
-static NSString *const kStartRecording = @"Start Recording";
-static NSString *const kStopRecording = @"Stop Recording";
-
 @interface PlaylistInformationViewController () <PlayerDelegate>
 @end
 
@@ -27,7 +24,6 @@ static NSString *const kStopRecording = @"Stop Recording";
     __weak IBOutlet UILabel *_currentPlaylistLabel;
     __weak IBOutlet UILabel *_indicatedBitrateLabel;
     __weak IBOutlet UILabel *_switchBitrateLabel;
-    __weak IBOutlet UIButton *_toggleRecordingStateButton;
 }
 
 #pragma mark Unwind Segues
@@ -57,16 +53,6 @@ static NSString *const kStopRecording = @"Stop Recording";
 - (IBAction)segmentControlValueDidChange:(UISegmentedControl *)sender
 {
     [_player capPlaybackBitrateToBitrateAtIndex:[sender selectedSegmentIndex]];
-}
-
-- (IBAction)toggleRecordingButtonTapped:(UIButton *)sender
-{
-    if ([_player isRecording]) {
-        [_player stopRecording];
-    }
-    else {
-        [_player startRecording];
-    }
 }
 
 #pragma mark Overrides
@@ -118,16 +104,6 @@ static NSString *const kStopRecording = @"Stop Recording";
 - (void)player:(Player *)player didCapPlaybackBitrateToVariantBitrateAtIndex:(NSUInteger)index
 {
     [_bitrateSelectionSegmentControl setSelectedSegmentIndex:index];
-}
-
-- (void)playerDidBeginRecording:(Player *)player
-{
-    [_toggleRecordingStateButton setTitle:kStopRecording forState:UIControlStateNormal];
-}
-
-- (void)player:(Player *)player didProduceRecording:(Recording *)recording
-{
-    [_toggleRecordingStateButton setTitle:kStartRecording forState:UIControlStateNormal];
 }
 
 #pragma mark Private
