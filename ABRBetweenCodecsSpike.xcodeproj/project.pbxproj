@@ -373,8 +373,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = PPH9EJ7977;
+				DEVELOPMENT_TEAM = N53624Z834;
 				INFOPLIST_FILE = ABRBetweenCodecsSpike/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -383,8 +384,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = uk.co.mediaat.ABRBetweenCodecsSpike;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "7d6ff69c-50be-4bcf-935e-dd5c2f2fbcae";
-				PROVISIONING_PROFILE_SPECIFIER = "Media AT Development Provisioning Profile";
+				PROVISIONING_PROFILE = "e8e2222d-64d2-4b2f-90ef-14e583a4f3e8";
+				PROVISIONING_PROFILE_SPECIFIER = "MediaAT Enterprise Profile";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
