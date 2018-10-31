@@ -8,6 +8,11 @@
     <string>N53624Z834</string>
     <key>compileBitcode</key>
     <false/>
+    <key>provisioningProfiles</key>
+    <dict>
+	<key>uk.co.mediaat.ABRBetweenCodecsSpike</key>
+        <string>MediaAT Enterprise Profile</string>
+    </dict>
 </dict>
-</plist
+</plist>
 >
