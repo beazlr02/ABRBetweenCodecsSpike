@@ -23,7 +23,8 @@
                                 [PlaylistRepository radioThree],
                                 [PlaylistRepository radioFour],
                                 [PlaylistRepository radioFiveLive],
-                                [PlaylistRepository frankenstine]];
+                                [PlaylistRepository frankenstine],
+                                [PlaylistRepository radioThreeBreakfast]];
 }
 
 - (NSURL *)playlistURL

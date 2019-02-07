@@ -40,4 +40,9 @@
     return [NSURL URLWithString:@"http://a.files.bbci.co.uk/media/int/audio_abr_test.m3u8"];
 }
 
++ (NSURL *)radioThreeBreakfast
+{
+    return [NSURL URLWithString:@"https://a.files.bbci.co.uk/media/int/radio3_breakfast.m3u8"];
+}
+
 @end
