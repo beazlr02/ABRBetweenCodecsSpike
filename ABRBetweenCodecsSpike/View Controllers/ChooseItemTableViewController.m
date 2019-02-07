@@ -22,7 +22,8 @@
                                 [PlaylistRepository radioTwo],
                                 [PlaylistRepository radioThree],
                                 [PlaylistRepository radioFour],
-                                [PlaylistRepository radioFiveLive]];
+                                [PlaylistRepository radioFiveLive],
+                                [PlaylistRepository frankenstine]];
 }
 
 - (NSURL *)playlistURL
@@ -37,6 +38,7 @@
 {
     NSURL *selectedURL = _predefinedPlaylistURLs[sender.tag];
     [_playlistURLTextField setText:[selectedURL absoluteString]];
+    
 }
 
 @end

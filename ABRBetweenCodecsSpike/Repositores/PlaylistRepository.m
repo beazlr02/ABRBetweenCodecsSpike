@@ -35,4 +35,9 @@
     return [NSURL URLWithString:@"http://as-dash-uk-live.akamaized.net/pool_6/live/bbc_radio_five_live/bbc_radio_five_live.isml/.m3u8"];
 }
 
++ (NSURL *)frankenstine
+{
+    return [NSURL URLWithString:@"http://a.files.bbci.co.uk/media/int/audio_abr_test.m3u8"];
+}
+
 @end

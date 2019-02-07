@@ -15,5 +15,6 @@
 + (NSURL *)radioThree;
 + (NSURL *)radioFour;
 + (NSURL *)radioFiveLive;
++ (NSURL *)frankenstine;
 
 @end

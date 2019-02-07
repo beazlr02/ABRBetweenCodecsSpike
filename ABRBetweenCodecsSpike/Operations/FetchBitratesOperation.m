@@ -33,7 +33,7 @@
     NSData *playlistData = [NSData dataWithContentsOfURL:_playlistURL options:0 error:&error];
     if (playlistData) {
         NSString *playlistContents = [[NSString alloc] initWithData:playlistData encoding:NSUTF8StringEncoding];
-        NSRegularExpression *bandwidthExpression = [NSRegularExpression regularExpressionWithPattern:@"#EXT-X-STREAM-INF:BANDWIDTH=(\\d+)," options:0 error:nil];
+        NSRegularExpression *bandwidthExpression = [NSRegularExpression regularExpressionWithPattern:@"#EXT-X-STREAM-INF.*BANDWIDTH=(\\d+)," options:0 error:nil];
         
         NSCharacterSet *seperatorCharacters = [NSCharacterSet characterSetWithCharactersInString:@"=,"];
         [bandwidthExpression enumerateMatchesInString:playlistContents options:0 range:NSMakeRange(0, [playlistContents length]) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
